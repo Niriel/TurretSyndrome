@@ -108,6 +108,11 @@ void ATurretPawn::BeginPlay()
 void ATurretPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (Shooting) {
+		if (HeadActor) {
+			HeadActor->TryToFire();
+		}
+	}
 }
 
 // Called to bind functionality to input
@@ -120,6 +125,7 @@ void ATurretPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	InputComponent->BindAxis("TurretZoom", this, &ATurretPawn::Zoom);
 	InputComponent->BindAction("TurretExit", IE_Pressed, this, &ATurretPawn::ExitTurret);
 	InputComponent->BindAction("TurretShoot", IE_Pressed, this, &ATurretPawn::StartShooting);
+	InputComponent->BindAction("TurretShoot", IE_Released, this, &ATurretPawn::StopShooting);
 }
 
 void ATurretPawn::YawRot(float value)
@@ -202,12 +208,6 @@ void ATurretPawn::ExitTurret() {
 
 void ATurretPawn::StartShooting() {
 	Shooting = true;
-
-	if (!HeadActor) {
-		UE_LOG(LogTurret, Error, TEXT("Cannot shoot: Turret has no head"));
-		return;
-	}
-	HeadActor->SpawnProjectile();
 }
 
 void ATurretPawn::StopShooting() {

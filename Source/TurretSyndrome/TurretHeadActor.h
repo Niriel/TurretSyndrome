@@ -30,15 +30,26 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Turret")
 		TSubclassOf<AActor> ProjectileClass;
 
-	IInteractiveActor* InteractiveTurret; // The turret we are attached to.
+	/** The delay between shots, in seconds. */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Turret")
+		float FiringPeriod;
 
+	IInteractiveActor* InteractiveTurret; // The turret we are attached to.
 public:
 	ATurretHeadActor();
 
 	UFUNCTION(BlueprintCallable, Category = "Turret")
 		virtual void SpawnProjectile();
 
+	UFUNCTION(BlueprintCallable, Category = "Turret")
+		virtual void TryToFire();
+
+	UFUNCTION(BlueprintCallable, Category = "Turret")
+		virtual void EnableFireAgain();
+
 protected:
+	bool CanShoot;
+	FTimerHandle FiringPeriodHandle;
 	virtual void BeginPlay() override;
 
 public:

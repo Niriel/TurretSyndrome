@@ -22,6 +22,11 @@ ATurretHeadActor::ATurretHeadActor()
 
 	CameraLocationComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Camera Location"));
 	CameraLocationComponent->SetupAttachment(RootComponent);
+
+	// Firing rate limiter.
+	FiringPeriod = 0.5f;
+	CanShoot = true;
+	FiringPeriodHandle = FTimerHandle();
 }
 
 void ATurretHeadActor::BeginPlay()
@@ -51,4 +56,17 @@ void ATurretHeadActor::SpawnProjectile() {
 		MuzzleLocationComponent->GetComponentLocation(),
 		MuzzleLocationComponent->GetComponentRotation()
 	);
+}
+
+void ATurretHeadActor::TryToFire() {
+	if (CanShoot) {
+		CanShoot = false;
+		GetWorldTimerManager().SetTimer(FiringPeriodHandle, this, &ATurretHeadActor::EnableFireAgain, FiringPeriod, false);
+		SpawnProjectile();		
+	}
+}
+
+void ATurretHeadActor::EnableFireAgain() {
+	CanShoot = true;
+	GetWorldTimerManager().ClearTimer(FiringPeriodHandle);
 }
