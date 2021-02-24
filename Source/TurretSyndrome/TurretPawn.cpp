@@ -177,6 +177,7 @@ bool ATurretPawn::SetPilot(APawn* pilot, bool Force) {
 		else {
 			UE_LOG(LogTurret, Error, TEXT("Turret has a pilot but no controller, which should not happen. Nulling pilot."));
 		}
+		Shooting = false;
 		Pilot = nullptr;
 	}
 
